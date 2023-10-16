@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.lang.Character.getName;
@@ -19,11 +20,15 @@ public class Main {
 
         
 
-        Student s1 = new Student("Marci", "sahel",55, 36546, "cabbage");
-        students.add(new Student("Mary", "CS", 65, 4569273,"cherry"));
-        students.add(new Student("Mike", "WebDev", 59, 64233483, "habsburg"));
-        students.add(new Student("Kevin", "CyberSec", 85, 76543224, "cissko"));
+        Student s1 = new Student("Marci", "CS",55, 36546 );
+        Student s2 = new Student("Sam", "WebDev",70, 3654316);
+        Student s3 = new Student("Grevor", "CS",60, 765316);
+        students.add(new Student("Mary", "CS", 65, 4569273));
+        students.add(new Student("Mike", "WebDev", 59, 64233483));
+        students.add(new Student("Kevin", "CyberSec", 85, 76543224));
         students.add(s1);
+        students.add(s3);
+        students.add(s2);
         System.out.println(students);
 
         Function<Student, String> get_Name =
@@ -38,24 +43,33 @@ public class Main {
         Function<Student, Integer> get_ID = 
                 i -> i.ID();
 
-        
-        
+        Function<Student, String> get_email = 
+                i -> i.email();
+
+        Function<Student, Integer> get_num =
+                i -> i.phoneNumber();
 
         
 
         Predicate<Student> doesCS =
-                student -> student.course().contains("CS");
+                student -> get_course.apply(student).contains("CS");
+
         // function to say the name of the student object
         Consumer<Student> sayName =
-            input -> System.out.println("The name is: " + get_Name.apply(input));
+            input -> System.out.println("Student's name with ID " + get_ID.apply(input) + " is: " + get_Name.apply(input));
+
+        Consumer<Student> say_desc = 
+                input -> System.out.println("Student's name is " + get_Name.apply(input) +
+                ". Their ID is :" + get_ID.apply(input) + ", and their average grade is " + get_grade.apply(input) +
+                ". They can be reached at phone number " + get_num.apply(input) + ", or at " + get_email.apply(input));
+
         Consumer<Student> sayGrade =
-                input -> System.out.println(" grade is : " + get_grade.apply(input));
+                input -> System.out.println("Student grade is : " + get_grade.apply(input));
 
         
-
         // function that replaces print() and outputs the input
-        // Consumer<String> say =
-        //         input -> System.out.println(input);
+        // decided to use the Object parameter so that it would take 
+        
 
         Consumer<Object> say =
                 input -> System.out.println(input);
@@ -63,18 +77,52 @@ public class Main {
         say.accept("hey");
         say.accept("i wanna be a space crab");
         say.accept(3);
-        
+        say.accept("The ID of student 1 is: " + get_ID.apply(s1));
+        say.accept(s1);
+        say.accept(s2);
+        say.accept(s3);
+        say.accept(get_email.apply(s3));
+
+        Function<String, Boolean> strM =
+                input -> input.startsWith("M");
 
 
         Predicate<Student> above70 =
-                student -> student.gradeAverage() > 70;
+                student -> get_grade.apply(student) > 70;
+        
+        Predicate<Student> startsWithM =
+                input -> strM.apply(get_Name.apply(input));
+                // input -> get_Name.andThen(strM).accept(input);
+
         List<String> newStudents =
                 students.stream()
                         .filter(doesCS)
                         .map(student -> student.name())
                         .collect(Collectors.toList());
 
-        System.out.println(newStudents);
+        // List<Student> student_list_2 =
+        //         students.stream()
+        //         .filter(startsWithM)
+        //         .collect(Collectors.toList());
+
+        Function<Student, String> getDescription =
+        student -> {
+                String description = "Student's name is " + get_Name.apply(student) +
+                        ". Their ID is :" + get_ID.apply(student) + ", and their average grade is " + get_grade.apply(student) +
+                        ". They can be reached at phone number " + get_num.apply(student) + ", or at " + get_email.apply(student) + "\n";
+                return description;
+            };
+
+        List<String> student_list_2 =
+                students.stream()
+                .filter(startsWithM)
+                .map(getDescription)
+                .collect(Collectors.toList());
+        
+        say.accept("The Student list 2 is: " +student_list_2);
+
+        say.accept("The list of students that do CS is: " + newStudents);
+        
         List<Student> allStudents =
                 students.stream()
                         .collect(Collectors.toList());

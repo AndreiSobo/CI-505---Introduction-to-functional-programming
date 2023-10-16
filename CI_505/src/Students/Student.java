@@ -13,8 +13,8 @@ public record Student(
 ) {
     public static int studentID = 0;
 
-    public Student(String name, String course, int gradeAverage, int phoneNumber, String email) {
-        this(++studentID, name, course, gradeAverage, phoneNumber,email = name+ "@brighton.co.uk" );
+    public Student(String name, String course, int gradeAverage, int phoneNumber) {
+        this(++studentID, name, course, gradeAverage, phoneNumber, name+ "@brighton.co.uk" );
     }
 
     
