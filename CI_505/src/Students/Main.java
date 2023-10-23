@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static java.lang.Character.getName;
 
 public class Main {
     public static void main(String[] args) {
