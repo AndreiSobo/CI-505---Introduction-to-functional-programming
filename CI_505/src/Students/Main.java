@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+// TODO make comments explaining everything
 
 public class Main {
     public static void main(String[] args) {
@@ -19,12 +20,12 @@ public class Main {
 
         
 
-        Student s1 = new Student("Marci", "CS",55, 36546 );
-        Student s2 = new Student("Sam", "WebDev",70, 3654316);
-        Student s3 = new Student("Grevor", "CS",60, 765316);
-        students.add(new Student("Mary", "CS", 65, 4569273));
-        students.add(new Student("Mike", "WebDev", 59, 64233483));
-        students.add(new Student("Kevin", "CyberSec", 85, 76543224));
+        Student s1 = new Student("Marci", "CS",20, 55, 36546 );
+        Student s2 = new Student("Sam", "WebDev", 33, 70, 3654316);
+        Student s3 = new Student("Grevor", "CS", 19, 60, 765316);
+        students.add(new Student("Mary", "CS", 22, 65, 4569273));
+        students.add(new Student("Mike", "WebDev", 39, 59, 64233483));
+        students.add(new Student("Kevin", "CyberSec", 27, 85, 76543224));
         students.add(s1);
         students.add(s3);
         students.add(s2);
@@ -48,6 +49,9 @@ public class Main {
         Function<Student, Integer> get_num =
                 i -> i.phoneNumber();
 
+        // function that replaces print() and outputs the input
+        Consumer<Object> say =
+                input -> System.out.println(input);
         
 
         Predicate<Student> doesCS =
@@ -62,20 +66,16 @@ public class Main {
                 ". Their ID is :" + get_ID.apply(input) + ", and their average grade is " + get_grade.apply(input) +
                 ". They can be reached at phone number " + get_num.apply(input) + ", or at " + get_email.apply(input));
 
+        
         Consumer<Student> sayGrade =
                 input -> System.out.println("Student grade is : " + get_grade.apply(input));
 
         
-        // function that replaces print() and outputs the input
-        // decided to use the Object parameter so that it would take 
+        
+        // make a query that uses sa_desc on all elements contained in "students"
+        
         
 
-        Consumer<Object> say =
-                input -> System.out.println(input);
-
-        say.accept("hey");
-        say.accept("i wanna be a space crab");
-        say.accept(3);
         say.accept("The ID of student 1 is: " + get_ID.apply(s1));
         say.accept(s1);
         say.accept(s2);
@@ -92,17 +92,22 @@ public class Main {
         Predicate<Student> startsWithM =
                 input -> strM.apply(get_Name.apply(input));
                 // input -> get_Name.andThen(strM).accept(input);
-
+        System.out.println("\n");
+        System.out.println("Applies the doesCS predicate on filter and them geets name of students");
         List<String> newStudents =
                 students.stream()
                         .filter(doesCS)
                         .map(student -> student.name())
                         .collect(Collectors.toList());
-
-        // List<Student> student_list_2 =
-        //         students.stream()
-        //         .filter(startsWithM)
-        //         .collect(Collectors.toList());
+        say.accept("The list of students that do CS is: " + newStudents);
+        say.accept("\n");
+        /// make use of above70 Predicate
+        List<Student> above70Students = 
+                students.stream()
+                .filter(above70)
+                .collect(Collectors.toList());
+        say.accept("The list of students that have above 70");
+        say.accept(above70Students);
 
         Function<Student, String> getDescription =
         student -> {
@@ -111,25 +116,59 @@ public class Main {
                         ". They can be reached at phone number " + get_num.apply(student) + ", or at " + get_email.apply(student) + "\n";
                 return description;
             };
-
-        List<String> student_list_2 =
+        System.out.println("\n");
+        System.out.println("make use of starts with 'M' and the maps getDescription");
+        List<String> studentCompleteDescription =
                 students.stream()
                 .filter(startsWithM)
                 .map(getDescription)
                 .collect(Collectors.toList());
-        
-        say.accept("The Student list 2 is: " +student_list_2);
+        say.accept("The complete description of students: " +studentCompleteDescription);
 
-        say.accept("The list of students that do CS is: " + newStudents);
+        
         
         List<Student> allStudents =
                 students.stream()
                         .collect(Collectors.toList());
-        for (Student s : allStudents) {
-            sayName.andThen(sayGrade).accept(s);
-        }
+        // make use of say_desc on all the students in the "students" stream()
+        // printing the sholw desc
+        students.forEach(say_desc);
 
-//        BiConsumer<List, Function> sayEveryonesName =
-//
+        // create a string with the complete description of all students
+        String all_students_desc = students.stream()
+                .map(getDescription)
+                .collect(Collectors.joining("\n"));
+
+        say.accept("\n");
+        say.accept("The complete description of all students");
+        say.accept(all_students_desc);
+        //can look at a functional way to implement thais
+        // for (Student s : allStudents) {
+        //     sayName.andThen(sayGrade).accept(s);
+        // }
+        
+
+
+//       Add an element of BiConsumer
+//  BiConsumer<List, Function> sayEveryonesName =
+
+        // Add elements used in last lecture - week4:
+        // Data transformations using .map(): 
+        Predicate<Student> hasEmail = student -> get_email.apply(student) != null;
+
+        boolean anyStudentHasEmail = students.stream().anyMatch(hasEmail);
+
+        if (anyStudentHasEmail) {
+                System.out.println("At least one student has an email address.");
+        } else {
+                System.out.println("No student has an email address.");
+        }
+        List<Student> 
+        // Use min / max / sorted, from the stream() API
+        // make use of Reduce() and ways to implement that
+
+        // Using .min() and .max() from the lecture session, 
+        //identify the oldest and the youngest student in the Stream
+
     }
 }
